@@ -1,9 +1,18 @@
 name: "Get the default bucket name for artifacts"
 description: "Uses main-quest/actions.gsutil"
+inputs:
+  bucket:
+    description: |
+      "Handy parameter. Returns the same value if non-empty.
+      Leave empty to use the implicit 'gh-runs_<org-name>_<repo-name>'. 
+      For the implicit bucket name, dots are replaced by hyphens, slashes are replaced by underscores. The bucket name should be lowercase. For 'My-Dear-Org/my.repo', we get 'gh-runs_my-dear-org_my-repo'"
+    required: false
+
 outputs:
   bucket_name: 
     description: "The default bucket name, based on run id and repo url"
     value: ${{ steps.bucket_namer.outputs.value }}
+
 runs:
   using: "composite"
   steps:  
@@ -11,10 +20,13 @@ runs:
         id: bucket_namer
         shell: bash
         run: |
-          repo="${{ github.repository }}"
-          b_no_slashes=$(echo "$repo" | sed "s/\//_/g")
-          b_no_dots=$(echo "$b_no_slashes" | sed "s/\./-/g")
-          b_lowercase=$(echo "$b_no_dots" | (tr '[:upper:]' '[:lower:]'))
-          b=gh-runs_"$b_lowercase"
-          echo "Using $b as implicit bucket name"
+          b="${{ inputs.bucket }}"
+          if [ -z "$b" ]; then
+            repo="${{ github.repository }}"
+            b_no_slashes=$(echo "$repo" | sed "s/\//_/g")
+            b_no_dots=$(echo "$b_no_slashes" | sed "s/\./-/g")
+            b_lowercase=$(echo "$b_no_dots" | (tr '[:upper:]' '[:lower:]'))
+            b=gh-runs_"$b_lowercase"
+            echo "Using $b as implicit bucket name"
+          fi
           echo "::set-output name=value::$b"
