@@ -1,5 +1,5 @@
 name: "Get the default bucket name for artifacts"
-description: "Uses main-quest/actions.gsutil"
+description: "N/A"
 inputs:
   bucket:
     description: |
