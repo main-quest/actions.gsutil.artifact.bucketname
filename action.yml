@@ -11,40 +11,22 @@ inputs:
 outputs:
   bucket_name: 
     description: "The default bucket name, based on run id and repo url"
-    value: ${{ steps.bucket_namer.outputs.value }}
+    # Fun hack until we find a proper way: since only one of them will be executed, joining them gives us the correct result!
+    value: ${{ steps.bucket_namer_unix.outputs.value }}${{ steps.bucket_namer_win.outputs.value }}
 
 runs:
   using: "composite"
-  steps:  
-      - name: Get shell name to use
-        id: shell_namer1
-        if: runner.os == 'Windows'
-        shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
-        run: |
-          echo "::set-output name=value::wsl bash --noprofile --norc -euo pipefail \"$(wslpath '{0}')\""
-          echo "V_SHELL=wsl bash --noprofile --norc -euo pipefail \"$(wslpath '{0}')\"" >> $env:GITHUB_ENV
+  steps: 
+      # Note: code duplication was the only way atm
 
-      - name: Get shell name to use
-        id: shell_namer2
+      - name: Get bucket name [UNIX]
+        id: bucket_namer_unix
         if: runner.os != 'Windows'
         shell: bash
-        run: |
-          echo "::set-output name=value::bash"
-          echo "V_SHELL=bash" >> $GITHUB_ENV
+        run: chmod +x out_bucketname.sh && ./out_bucketname.sh "${{ inputs.bucket }}"
 
-      - name: Get bucket name
-        id: bucket_namer
-        # Fun hack until we find a proper way: since only one of them will be executed, joining them gives us the correct result!
-        # shell: ${{ steps.shell_namer1.outputs.value }}${{ steps.shell_namer2.outputs.value }}
-        shell: env.V_SHELL
-        run: |
-          b="${{ inputs.bucket }}"
-          if [ -z "$b" ]; then
-            repo="${{ github.repository }}"
-            b_no_slashes=$(echo "$repo" | sed "s/\//_/g")
-            b_no_dots=$(echo "$b_no_slashes" | sed "s/\./-/g")
-            b_lowercase=$(echo "$b_no_dots" | (tr '[:upper:]' '[:lower:]'))
-            b=gh-runs_"$b_lowercase"
-            echo "Using $b as implicit bucket name"
-          fi
-          echo "::set-output name=value::$b"
+      - name: Get bucket name [WIN-WSL]
+        id: bucket_namer_win
+        if: runner.os == 'Windows'
+        shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
+        run: chmod +x out_bucketname.sh && ./out_bucketname.sh "${{ inputs.bucket }}"
