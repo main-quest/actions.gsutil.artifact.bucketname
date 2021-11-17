@@ -36,6 +36,10 @@ runs:
         shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
         run: |
           s="${{ github.action_path }}/out_bucketname.sh"
+          echo "Temp fix: remove carriage return"
+          # Temp fix: remove carriage return
+          sed -i 's/\r//g' "$s"
+
           echo $s
           echo $s
           echo $s
