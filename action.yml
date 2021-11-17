@@ -28,7 +28,7 @@ runs:
           echo $s
           echo $s
           echo $s
-          chmod +x "$s" && "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          chmod +x "$s" && . "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
 
       # - uses: Vampire/setup-wsl@v1
       #   with:
@@ -43,4 +43,4 @@ runs:
           s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
           echo "Temp fix via wslpath: convert paths like C:\\path to c:/mnt/path"
 
-          chmod +x "$s" && "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          chmod +x "$s" && . "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
