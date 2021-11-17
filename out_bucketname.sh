@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 b=$1
 if [ -z "$b" ]; then

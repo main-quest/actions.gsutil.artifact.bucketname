@@ -23,10 +23,14 @@ runs:
         id: bucket_namer_unix
         if: runner.os != 'Windows'
         shell: bash
-        run: chmod +x out_bucketname.sh && ./out_bucketname.sh "${{ inputs.bucket }}"
+        run: |
+          s="${{ github.action_path }}/out_bucketname.sh"
+          chmod +x "$s" && "$s" "${{ inputs.bucket }}"
 
       - name: Get bucket name [WIN-WSL]
         id: bucket_namer_win
         if: runner.os == 'Windows'
         shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
-        run: chmod +x out_bucketname.sh && ./out_bucketname.sh "${{ inputs.bucket }}"
+        run: |
+          s="${{ github.action_path }}/out_bucketname.sh"
+          chmod +x "$s" && "$s" "${{ inputs.bucket }}"
