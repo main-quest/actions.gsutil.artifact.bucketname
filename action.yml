@@ -31,7 +31,7 @@ runs:
 
       # - uses: Vampire/setup-wsl@v1
       #   with:
-      #       distribution: Ubuntu-18.04
+      #       distribution: Ubuntu-20.04
 
       - name: Get bucket name [WIN-WSL]
         id: bucket_namer_win

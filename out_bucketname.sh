@@ -8,7 +8,6 @@ if [ -z "$b" ]; then
 	b_no_dots=$(echo "$b_no_slashes" | sed "s/\./-/g")
 	b_lowercase=$(echo "$b_no_dots" | (tr '[:upper:]' '[:lower:]'))
 	b=gh-runs_"$b_lowercase"
-	echo "Using $b as implicit bucket name"
 fi
 echo "$b"
 
