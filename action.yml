@@ -17,7 +17,7 @@ outputs:
 runs:
   using: "composite"
   env:
-    V_SCRIPT: ${{ github.action_path }}/out_bucketname.sh
+    V_SCRIPT: ${{ format('{0}/out_bucketname.sh', github.action_path) }}
   steps: 
       # Note: code duplication was the only way atm
 
