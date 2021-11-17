@@ -7,9 +7,9 @@ inputs:
       Leave empty to use the implicit 'gh-runs_<org-name>_<repo-name>'. 
       For the implicit bucket name, dots are replaced by hyphens, slashes are replaced by underscores. The bucket name should be lowercase. For 'My-Dear-Org/my.repo', we get 'gh-runs_my-dear-org_my-repo'"
     required: false
-  __win_shell:
-    description: "[Internal] Use a different bash shell command for windows. Uses WSL bash by default"
-    default: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
+  # __win_shell:
+  #   description: "[Internal] Use a different bash shell command for windows. Uses WSL bash by default"
+  #   default: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
 
 outputs:
   bucket_name: 
@@ -39,7 +39,8 @@ runs:
       - name: Get bucket name [WIN-WSL]
         id: bucket_namer_win
         if: runner.os == 'Windows'
-        shell: ${{ inputs.__win_shell }}
+        # shell: ${{ inputs.__win_shell }}
+        shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
           s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
           chmod +x "$s"
