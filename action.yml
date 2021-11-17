@@ -25,6 +25,9 @@ runs:
         shell: bash
         run: |
           s="${{ github.action_path }}/out_bucketname.sh"
+          echo $s
+          echo $s
+          echo $s
           chmod +x "$s" && "$s" "${{ inputs.bucket }}"
 
       - name: Get bucket name [WIN-WSL]
@@ -33,4 +36,7 @@ runs:
         shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
         run: |
           s="${{ github.action_path }}/out_bucketname.sh"
+          echo $s
+          echo $s
+          echo $s
           chmod +x "$s" && "$s" "${{ inputs.bucket }}"
