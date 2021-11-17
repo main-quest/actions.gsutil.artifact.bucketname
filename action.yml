@@ -16,6 +16,8 @@ outputs:
 
 runs:
   using: "composite"
+  env:
+    V_SCRIPT: ${{ github.action_path }}/out_bucketname.sh
   steps: 
       # Note: code duplication was the only way atm
 
@@ -24,10 +26,10 @@ runs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          s="${{ github.action_path }}/out_bucketname.sh"
+          echo $V_SCRIPT
+          s="$V_SCRIPT"
           chmod +x "$s"
           "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
-          echo "::set-output name=value::$b"
 
       # - uses: Vampire/setup-wsl@v1
       #   with:
@@ -39,7 +41,7 @@ runs:
         # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
         shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
-          s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
+          echo $V_SCRIPT
+          s=$(wslpath "$V_SCRIPT")
           chmod +x "$s"
-          b=$("$s" "${{ github.repository }}" "${{ inputs.bucket }}")
-          echo "::set-output name=value::$b"
+          "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
