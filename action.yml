@@ -22,6 +22,7 @@ runs:
         shell: wsl bash --noprofile --norc -euo pipefail "$(wslpath '{0}')"
         run: |
           echo "::set-output name=value::wsl bash --noprofile --norc -euo pipefail \"$(wslpath '{0}')\""
+          echo "V_SHELL=wsl bash --noprofile --norc -euo pipefail \"$(wslpath '{0}')\"" >> $env:GITHUB_ENV
 
       - name: Get shell name to use
         id: shell_namer2
@@ -29,11 +30,13 @@ runs:
         shell: bash
         run: |
           echo "::set-output name=value::bash"
+          echo "V_SHELL=bash" >> $GITHUB_ENV
 
       - name: Get bucket name
         id: bucket_namer
         # Fun hack until we find a proper way: since only one of them will be executed, joining them gives us the correct result!
-        shell: ${{ steps.shell_namer1.outputs.value }}${{ steps.shell_namer2.outputs.value }}
+        # shell: ${{ steps.shell_namer1.outputs.value }}${{ steps.shell_namer2.outputs.value }}
+        shell: ${{ env.V_SHELL }}
         run: |
           b="${{ inputs.bucket }}"
           if [ -z "$b" ]; then
