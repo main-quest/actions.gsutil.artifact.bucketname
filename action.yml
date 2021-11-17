@@ -28,7 +28,7 @@ runs:
           echo $s
           echo $s
           echo $s
-          chmod +x "$s" && "$s" "${{ inputs.bucket }}"
+          chmod +x "$s" && "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
 
       # - uses: Vampire/setup-wsl@v1
       #   with:
@@ -40,16 +40,7 @@ runs:
         # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
         shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
-          s="${{ github.action_path }}/out_bucketname.sh"
+          s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
           echo "Temp fix via wslpath: convert paths like C:\\path to c:/mnt/path"
-          s=$(wslpath "$s")
 
-          # Commented: no need, as the repo already handles this via .gitattributes
-          # echo "Temp fix: remove carriage return"
-          # # Temp fix: remove carriage return
-          # sed -i 's/\r//g' "$s"
-
-          echo $s
-          echo $s
-          echo $s
-          chmod +x "$s" && "$s" "${{ inputs.bucket }}"
+          chmod +x "$s" && "$s" "${{ github.repository }}" "${{ inputs.bucket }}"

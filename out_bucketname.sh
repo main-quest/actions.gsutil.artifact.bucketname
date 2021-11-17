@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-b=$1
+repo="$1"
+b="$2"
 if [ -z "$b" ]; then
-	repo="$GITHUB_REPOSITORY"
 	b_no_slashes=$(echo "$repo" | sed "s/\//_/g")
 	b_no_dots=$(echo "$b_no_slashes" | sed "s/\./-/g")
 	b_lowercase=$(echo "$b_no_dots" | (tr '[:upper:]' '[:lower:]'))
