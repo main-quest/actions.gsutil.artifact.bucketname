@@ -1,5 +1,5 @@
 name: "Get the default bucket name for artifacts"
-description: "N/A"
+description: "Works on Unix and Windows-WSL"
 inputs:
   bucket:
     description: |
@@ -16,8 +16,6 @@ outputs:
 
 runs:
   using: "composite"
-  env:
-    V_SCRIPT: ${{ format('{0}/out_bucketname.sh', github.action_path) }}
   steps: 
       # Note: code duplication was the only way atm
 
@@ -26,11 +24,11 @@ runs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          echo $V_SCRIPT
-          s="$V_SCRIPT"
+          s="${{ github.action_path }}/out_bucketname.sh"
           chmod +x "$s"
           "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
 
+      # Can also use this, but it's kinda heavy, so expecting the machine to alraedy have wsl installed
       # - uses: Vampire/setup-wsl@v1
       #   with:
       #       distribution: Ubuntu-20.04
@@ -41,7 +39,6 @@ runs:
         # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
         shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
-          echo $V_SCRIPT
-          s=$(wslpath "$V_SCRIPT")
+          s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
           chmod +x "$s"
           "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
