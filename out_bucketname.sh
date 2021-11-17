@@ -11,3 +11,4 @@ if [ -z "$b" ]; then
 	echo "Using $b as implicit bucket name"
 fi
 echo "::set-output name=value::$b"
+
