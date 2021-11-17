@@ -36,7 +36,7 @@ runs:
         id: bucket_namer
         # Fun hack until we find a proper way: since only one of them will be executed, joining them gives us the correct result!
         # shell: ${{ steps.shell_namer1.outputs.value }}${{ steps.shell_namer2.outputs.value }}
-        shell: ${{ env.V_SHELL }}
+        shell: env.V_SHELL
         run: |
           b="${{ inputs.bucket }}"
           if [ -z "$b" ]; then
