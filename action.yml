@@ -25,10 +25,9 @@ runs:
         shell: bash
         run: |
           s="${{ github.action_path }}/out_bucketname.sh"
-          echo $s
-          echo $s
-          echo $s
-          chmod +x "$s" && . "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          chmod +x "$s"
+          "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          echo "::set-output name=value::$b"
 
       # - uses: Vampire/setup-wsl@v1
       #   with:
@@ -41,6 +40,6 @@ runs:
         shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
           s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
-          echo "Temp fix via wslpath: convert paths like C:\\path to c:/mnt/path"
-
-          chmod +x "$s" && . "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          chmod +x "$s"
+          b=$("$s" "${{ github.repository }}" "${{ inputs.bucket }}")
+          echo "::set-output name=value::$b"

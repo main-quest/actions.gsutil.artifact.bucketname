@@ -10,5 +10,5 @@ if [ -z "$b" ]; then
 	b=gh-runs_"$b_lowercase"
 	echo "Using $b as implicit bucket name"
 fi
-echo "::set-output name=value::$b"
+echo "$b"
 
