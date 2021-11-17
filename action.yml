@@ -30,11 +30,15 @@ runs:
           echo $s
           chmod +x "$s" && "$s" "${{ inputs.bucket }}"
 
+      # - uses: Vampire/setup-wsl@v1
+      #   with:
+      #       distribution: Ubuntu-18.04
+
       - name: Get bucket name [WIN-WSL]
         id: bucket_namer_win
         if: runner.os == 'Windows'
         # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
-        shell: wsl bash --noprofile --norc -euo pipefail "$(s=\"$(wslpath '{0}')\" && sed -i 's/\r$//' \"$s\" && echo \"$s\")"
+        shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
         run: |
           s="${{ github.action_path }}/out_bucketname.sh"
           echo "Temp fix via wslpath: convert paths like C:\\path to c:/mnt/path"
