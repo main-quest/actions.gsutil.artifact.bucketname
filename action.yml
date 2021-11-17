@@ -14,14 +14,13 @@ outputs:
     # Fun hack until we find a proper way: since only one of them will be executed, joining them gives us the correct result!
     value: ${{ steps.bucket_namer_unix.outputs.value }}${{ steps.bucket_namer_win.outputs.value }}
 
-defaults:
-  run:
-    # Default shell shortcut (avoid duplicate code)
-    # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
-    shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
-
 runs:
   using: "composite"
+  defaults:
+    run:
+      # Default shell shortcut (avoid duplicate code)
+      # Thanks https://github.com/actions/virtual-environments/issues/50#issuecomment-663917469
+      shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
   steps: 
       # Note: code duplication was the only way atm
 
