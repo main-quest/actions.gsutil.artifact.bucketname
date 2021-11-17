@@ -24,7 +24,7 @@ runs:
           echo "::set-output name=value::wsl bash --noprofile --norc -euo pipefail \"$(wslpath '{0}')\""
 
       - name: Get shell name to use
-        id: shell_namer1
+        id: shell_namer2
         if: runner.os != 'Windows'
         shell: bash
         run: |
