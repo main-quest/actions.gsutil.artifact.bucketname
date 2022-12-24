@@ -39,9 +39,24 @@ runs:
       - name: Get bucket name [WIN-WSL]
         id: bucket_namer_win
         if: runner.os == 'Windows'
-        # shell: ${{ inputs.__win_shell }}
-        shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
+        # # shell: ${{ inputs.__win_shell }}
+        # shell: wsl bash --noprofile --norc -euo pipefail "$(s="$(wslpath '{0}')" && sed -i 's/\r$//' "$s" && echo "$s")"
+        # run: |
+        #   s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
+        #   chmod +x "$s"
+        #   "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          
+        shell: powershell
         run: |
-          s=$(wslpath "${{ github.action_path }}/out_bucketname.sh")
-          chmod +x "$s"
-          "$s" "${{ github.repository }}" "${{ inputs.bucket }}"
+          $s="$(wsl bash --noprofile --norc -euo pipefail -c 'wslpath ''${{ github.action_path }}/out_bucketname.sh''')"
+          echo "Script debug: $s"
+          wsl bash --noprofile --norc -euo pipefail -c "chmod +x '$s'"
+          wsl bash --noprofile --norc -euo pipefail -c "sed -i 's/\r`$//' '$s'"
+
+          $cmd = 'export GITHUB_OUTPUT="$(wslpath '''
+          $cmd += "$env:GITHUB_OUTPUT"
+          $cmd += ''')"'
+          $cmd += " && '$s'"
+          $cmd += ' ''${{ github.repository }}'''
+          $cmd += ' ''${{ inputs.bucket }}'''
+          wsl bash --noprofile --norc -euo pipefail -c "$cmd"
